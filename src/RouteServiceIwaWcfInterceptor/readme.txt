@@ -2,17 +2,17 @@
 
 Stable versions are available at www.nuget.org https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor (please refer to the note at the end for more details)
 
-This package will add a Wcf client interceptor which will injects kerberos ticket for egress requests. This should be used together with the supply buildpack https://github.com/alfusinigoj/route-service-auth-egress-buildpack to make it fully functional
+This package will add a Wcf client interceptor which will injects kerberos ticket for egress requests. This should be used together with the supply buildpack https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack to make it fully functional
 
 ============================================================================================================================================
 Below are the important developer instructions, to follow after installation of this package
 ============================================================================================================================================
 
-1. Add the supply buildpack from "https://github.com/alfusinigoj/route-service-auth-egress-buildpack/releases" in the CF manifest (preferably the latest release). 
+1. Add the supply buildpack from "https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack" in the CF manifest (preferably the latest release). 
    IMPORTANT: Make sure the application is built/published with target platform 'x64'
 
 2. Follow the readme of https://github.com/alfusinigoj/route-service-auth-egress-buildpack to setup the sources for kerberos config and keytab files
-   For kerberos config template, please here https://github.com/alfusinigoj/route-service-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
+   For kerberos config template, please here https://github.com/cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
 
 3. Set the correct client UPN in AppSettings with key 'ClientUserPrincipalName' as below (this section will be already added by the package)
 

@@ -137,7 +137,7 @@ namespace Pivotal.RouteServiceIwaWcfInterceptor
             var executablePath = Path.Combine(APP_BIN_PATH, "klist.exe");
 
             if (!File.Exists(executablePath))
-                throw new FileNotFoundException("Please ensure to add the latest version of cf supply buildpack from https://github.com/macsux/route-service-auth-buildpack/releases", executablePath);
+                throw new FileNotFoundException("Please ensure to add the latest version of cf supply buildpack from https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack/releases", executablePath);
 
             try
             {
@@ -158,7 +158,7 @@ namespace Pivotal.RouteServiceIwaWcfInterceptor
             var executablePath = Path.Combine(APP_BIN_PATH, "kinit.exe");
 
             if (!File.Exists(executablePath))
-                throw new FileNotFoundException("Please ensure to add the latest version of cf supply buildpack from https://github.com/macsux/route-service-auth-buildpack/releases", executablePath);
+                throw new FileNotFoundException("Please ensure to add the latest version of cf supply buildpack from https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack/releases", executablePath);
 
             RunCmd(executablePath, $"-k -i {principal}");
         }

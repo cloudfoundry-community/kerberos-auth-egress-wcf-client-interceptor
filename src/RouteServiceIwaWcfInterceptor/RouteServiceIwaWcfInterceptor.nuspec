@@ -5,9 +5,9 @@
     <version>$Version$</version>
     <title>PivotalServices.WcfClient.Kerberos.Interceptor</title>
     <authors>ajaganathan,astakhov</authors>
-    <owners>ajaganathan,astakhov</owners>
+    <owners>Pivotal</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package will inject Wcf client interceptor which injects kerberos ticket for egress requests. This should be used together with the supply buildpack https://github.com/alfusinigoj/route-service-auth-egress-buildpack/releases</description>
+    <description>Package will inject Wcf client interceptor which injects kerberos ticket for egress requests. This should be used together with the supply buildpack https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack/releases</description>
     <copyright>Copyright © 2019</copyright>
     <dependencies>
       <dependency id="AspNetCore.Authentication.GssKerberos" version="0.1.81-beta" />
