@@ -42,5 +42,5 @@ This package will add a Wcf client interceptor which will injects kerberos ticke
 6. To see debug logs, please set the log level to "Debug" or "Trace", via environment variable "PivotalIwaWcfClientInterceptor:LogLevel:Default" 
 
 ##### Notes
-1. The dev/alpha packages are available at https://www.myget.org/feed/ajaganathan/package/nuget/Pivotal.WcfClient.Kerberos.Interceptor, feed https://www.myget.org/F/ajaganathan/api/v3/index.json
+1. The dev/alpha packages are available at https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor, feed https://www.myget.org/F/ajaganathan/api/v3/index.json
 2. The packages are still in beta version as it still depends on a beta version of GssKerberos package.
