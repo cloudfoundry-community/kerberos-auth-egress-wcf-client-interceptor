@@ -61,6 +61,7 @@ class Build : NukeBuild
     AbsolutePath ProjectFile => ProjectDirectory / "RouteServiceIwaWcfInterceptor.csproj";
     AbsolutePath NuspecFile => ProjectDirectory / "RouteServiceIwaWcfInterceptor.nuspec";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+    AbsolutePath VersionFile => ArtifactsDirectory / "version.ini";
 
     Target Clean => _ => _
         .Executes(() =>
@@ -100,7 +101,13 @@ class Build : NukeBuild
     .Executes(() =>
     {
         var preReleaseTag = Source.Contains("nuget") ? "beta" : "alpha";
-        RunProcess("nuget.exe", $"pack {ProjectFile} -Version {GitVersion.MajorMinorPatch}-{preReleaseTag} -OutputDirectory {ArtifactsDirectory} -Properties Configuration={Configuration}");
+        var version = $"{GitVersion.MajorMinorPatch}-{preReleaseTag}";
+
+        Directory.EnumerateFiles(ArtifactsDirectory, "*.ini").ToList().ForEach(x => File.Delete(x));
+
+        File.WriteAllText(VersionFile, version);
+
+        RunProcess("nuget.exe", $"pack {ProjectFile} -Version {version} -OutputDirectory {ArtifactsDirectory} -Properties Configuration={Configuration}");
     });
 
     Target Push => _ => _
@@ -174,7 +181,7 @@ class Build : NukeBuild
         var owner = gitIdParts[0];
         var repoName = gitIdParts[1];
 
-        var releaseName = $"v{GitVersion.MajorMinorPatch}-{preReleaseTag}";
+        var releaseName = $"v{File.ReadAllText(VersionFile)}";
 
         Release release;
         try
