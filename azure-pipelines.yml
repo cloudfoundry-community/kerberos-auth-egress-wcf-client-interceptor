@@ -15,6 +15,7 @@ variables:
   NukeFile: '.nuke'
   VersionFile: 'release.version'
   GitVersion: $(GitVersion.MajorMinorPatch)
+  BuildVersion: $(GitVersion)-$[counter(variables['GitVersion'], 100)]
   GitFolder: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
   SourceDirectory: 'src'
@@ -29,7 +30,7 @@ steps:
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion)-$[counter(variables['GitVersion'], 100)]
+    BuildVersion: $(BuildVersion)
 
 - task: NuGetToolInstaller@1
     
