@@ -47,6 +47,9 @@ class Build : NukeBuild
     [Parameter("Version suffix for the nuget package")]
     readonly string Suffix = "alpha";
 
+    [Parameter("Build Version Number")]
+    readonly string BuildVersion = string.Empty;
+
     [Solution]
     readonly Solution Solution;
 
@@ -130,6 +133,7 @@ class Build : NukeBuild
     .Requires(() => Source)
     .Requires(() => SourceApiKey)
     .Requires(() => GithubApiKey)
+    .Requires(() => BuildVersion)
     .Executes(() =>
     {
         GlobFiles(ArtifactsDirectory, "*.nupkg").NotEmpty()
@@ -194,7 +198,9 @@ class Build : NukeBuild
         var owner = gitIdParts[0];
         var repoName = gitIdParts[1];
 
-        var releaseName = $"v{File.ReadAllText(VersionFile)}-{Suffix}";
+        var buildVersion = string.IsNullOrWhiteSpace(BuildVersion) ? File.ReadAllText(VersionFile) : BuildVersion;
+
+        var releaseName = $"v{buildVersion}-{Suffix}";
 
         Release release;
         try
