@@ -6,14 +6,12 @@ using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.MSBuild;
 using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities.Collections;
 using Octokit;
-using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
@@ -30,6 +28,9 @@ class Build : NukeBuild
 
     public static int Main() => Execute<Build>(x => x.Compile);
 
+    const string nugetSourceUrl = @"https://api.nuget.org/v3/index.json";
+    const string mygetSourceUrl = @"https://www.myget.org/F/ajaganathan/api/v2/package";
+
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
@@ -37,13 +38,13 @@ class Build : NukeBuild
     readonly string SourceApiKey;
 
     [Parameter("GitHub personal access token with access to the repo")]
-    string GithubApiKey;
-
-    const string nugetSourceUrl = @"https://api.nuget.org/v3/index.json";
-    const string mygetSourceUrl = @"https://www.myget.org/F/ajaganathan/api/v2/package";
+    readonly string GithubApiKey;
 
     [Parameter("Source url for the nuget/myget repository")]
     readonly string Source = mygetSourceUrl;
+
+    [Parameter("Version suffix for the nuget package")]
+    readonly string Suffix = "alpha";
 
     [Solution]
     readonly Solution Solution;
@@ -61,7 +62,7 @@ class Build : NukeBuild
     AbsolutePath ProjectFile => ProjectDirectory / "RouteServiceIwaWcfInterceptor.csproj";
     AbsolutePath NuspecFile => ProjectDirectory / "RouteServiceIwaWcfInterceptor.nuspec";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
-    AbsolutePath VersionFile => ArtifactsDirectory / "version.ini";
+    AbsolutePath VersionFile => RootDirectory / "release.version";
 
     Target Clean => _ => _
         .Executes(() =>
@@ -71,8 +72,18 @@ class Build : NukeBuild
             EnsureCleanDirectory(ArtifactsDirectory);
         });
 
-    Target Restore => _ => _
+    Target SetVersion => _ => _
         .DependsOn(Clean)
+        .Executes(() =>
+        {
+            if (!GitRepository.IsGitHubRepository())
+                throw new Exception("SetVersion supported when this is in a git repository");
+
+            File.WriteAllText(VersionFile, $"{GitVersion.MajorMinorPatch}");
+        });
+
+    Target Restore => _ => _
+        .DependsOn(SetVersion)
         .Executes(() =>
         {
             MSBuild(s => s
@@ -81,7 +92,7 @@ class Build : NukeBuild
         });
 
     Target Compile => _ => _
-        .DependsOn(Restore)
+        .DependsOn(SetVersion)
         .Executes(() =>
         {
             MSBuild(s => s
@@ -96,21 +107,21 @@ class Build : NukeBuild
                 .SetNodeReuse(IsLocalBuild));
         });
 
+    
+
     Target Pack => _ => _
-    .DependsOn(Compile)
+    .Requires(()=> Suffix)
     .Executes(() =>
     {
-        var preReleaseTag = Source.Contains("nuget") ? "beta" : "alpha";
-        var version = $"{GitVersion.MajorMinorPatch}-{preReleaseTag}";
+        if (File.Exists(VersionFile))
+            throw new FileNotFoundException(VersionFile);
 
-        Directory.EnumerateFiles(ArtifactsDirectory, "*.ini").ToList().ForEach(x => File.Delete(x));
-
-        File.WriteAllText(VersionFile, version);
-
+        var version = $"{File.ReadAllText(VersionFile)}-{Suffix}";
         RunProcess("nuget.exe", $"pack {ProjectFile} -Version {version} -OutputDirectory {ArtifactsDirectory} -Properties Configuration={Configuration}");
     });
 
     Target Push => _ => _
+    .DependsOn(Pack)
     .Requires(() => Source)
     .Requires(() => SourceApiKey)
     .Requires(() => GithubApiKey)
@@ -164,9 +175,7 @@ class Build : NukeBuild
     {
 
         if (!GitRepository.IsGitHubRepository())
-            throw new Exception("Only supported when git repo remote is github");
-
-        var preReleaseTag = Source.Contains("nuget") ? "beta" : "alpha";
+            throw new Exception("Release In GitHub is only supported when git repo remote is github!");
 
         var packageName = Path.GetFileName(artifactFullPath);
 
@@ -181,7 +190,7 @@ class Build : NukeBuild
         var owner = gitIdParts[0];
         var repoName = gitIdParts[1];
 
-        var releaseName = $"v{File.ReadAllText(VersionFile)}";
+        var releaseName = $"v{File.ReadAllText(VersionFile)}-{Suffix}";
 
         Release release;
         try
@@ -196,7 +205,7 @@ class Build : NukeBuild
         {
             Logger.Log(LogLevel.Normal, $"Release with name {releaseName} not found.. so creating new...");
 
-            var packageSource = (preReleaseTag == "beta" || string.IsNullOrWhiteSpace(preReleaseTag)) 
+            var packageSource = (Suffix == "beta" || string.IsNullOrWhiteSpace(Suffix)) 
                                             ? "https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor" 
                                             : "https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor";
 
@@ -205,7 +214,7 @@ class Build : NukeBuild
                 Name = releaseName,
                 Draft = false,
                 Prerelease = false,
-                Body = $"Package source: \n {packageSource}"
+                Body = $"Package source: {packageSource}"
             };
             release = client.Repository.Release.Create(owner, repoName, newRelease).Result;
         }
