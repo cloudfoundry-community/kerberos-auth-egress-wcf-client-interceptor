@@ -18,11 +18,7 @@ variables:
 steps:
 - task: NuGetToolInstaller@1
 - powershell: ls
-- task: CopyFiles@1
-  displayName: 'Copy .git file into staging directory for git release purposes'
-  inputs:
-    Contents: $(GitFolder)\**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
+
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
@@ -30,25 +26,31 @@ steps:
     arguments: 'Pack --Configuration $(BuildConfiguration)'
 
 - task: CopyFiles@1
-  displayName: 'Copy nuke build project into staging directory'
+  displayName: 'Copy $(NukeBuildDirectory) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(NukeBuildDirectory)\**
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
-  displayName: 'Copy .nuke file into staging directory'
+  displayName: 'Copy $(NukeFile) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(NukeFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
-  displayName: 'Copy build script(ps1) into staging directory'
+  displayName: 'Copy $(GitFolder) into $(Build.ArtifactStagingDirectory) for git release purposes'
+  inputs:
+    Contents: $(GitFolder)\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(NukeBuildScript) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(NukeBuildScript)
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
-  displayName: 'Copy solution file into staging directory (just for nuke purposes)'
+  displayName: 'Copy $(SolutionFile) into $(Build.ArtifactStagingDirectory) (just for nuke purposes)'
   inputs:
     Contents: $(SolutionFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
@@ -56,13 +58,13 @@ steps:
 
 
 - task: CopyFiles@1
-  displayName: 'Copy artifacts into staging directory'
+  displayName: 'Copy $(NukePublishDirectory) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(NukePublishDirectory)\**
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Packed Artifacts'
+  displayName: 'Publish Packed Artifacts from $(Build.ArtifactStagingDirectory)'
   inputs:
     PathtoPublish: $(Build.ArtifactStagingDirectory)
     ArtifactName: publish
