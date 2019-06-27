@@ -116,7 +116,9 @@ class Build : NukeBuild
     .Requires(()=> Suffix)
     .Executes(() =>
     {
-        if (File.Exists(VersionFile))
+        Directory.EnumerateFiles(RootDirectory, "*.*").ToList().ForEach(x => Logger.Log(LogLevel.Normal, $"File: {x}"));
+
+        if (!File.Exists(VersionFile))
             throw new FileNotFoundException(VersionFile);
 
         var version = $"{File.ReadAllText(VersionFile)}-{Suffix}";
