@@ -10,7 +10,10 @@ variables:
   BuildConfiguration: 'Release'
 
 steps:
+- task: NuGetToolInstaller@1
+
 - powershell: ls
+
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
