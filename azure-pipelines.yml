@@ -14,7 +14,6 @@ variables:
   NukeFile: '.nuke'
   GitFolder: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
-  GitVersionFile: 'GitVersion.yml'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -39,12 +38,6 @@ steps:
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
-  displayName: 'Copy $(GitVersionFile) into $(Build.ArtifactStagingDirectory)'
-  inputs:
-    Contents: $(GitVersionFile)
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
   displayName: 'Copy $(GitFolder) into $(Build.ArtifactStagingDirectory) for git release purposes'
   inputs:
     Contents: $(GitFolder)\**
@@ -61,8 +54,6 @@ steps:
   inputs:
     Contents: $(SolutionFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
-
-
 
 - task: CopyFiles@1
   displayName: 'Copy $(NukePublishDirectory) into $(Build.ArtifactStagingDirectory)'
