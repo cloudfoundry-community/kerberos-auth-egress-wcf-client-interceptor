@@ -8,6 +8,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Release'
+  ArtifactsDirectory: 'artifacts'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -19,3 +20,11 @@ steps:
   inputs:
     filePath: 'build.ps1'
     arguments: 'Pack --Configuration $(BuildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Packed Artifacts'
+  inputs:
+    PathtoPublish: "$(ArtifactsDirectory)"
+    ArtifactName: artifacts
+
+
