@@ -12,12 +12,12 @@ variables:
   NukeBuildDirectory: 'build'
   NukeBuildScript: 'build.ps1'
   NukeFile: '.nuke'
-  GitFile: '.git'
+  GitFolder: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
 
 steps:
 - task: NuGetToolInstaller@1
-
+- powershell: ls
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
@@ -51,8 +51,9 @@ steps:
 - task: CopyFiles@1
   displayName: 'Copy .git file into staging directory for git release purposes'
   inputs:
-    Contents: $(GitFile)
+    Contents: $(GitFile)\**
     TargetFolder: $(Build.ArtifactStagingDirectory)
+    SourceFolder: $(GitFile)
 
 - task: CopyFiles@1
   displayName: 'Copy artifacts into staging directory'
