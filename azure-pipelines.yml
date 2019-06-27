@@ -6,8 +6,11 @@ trigger:
 pool:
   vmImage: vs2017-win2016
 
+variables:
+  BuildConfiguration: 'Release'
+
 steps:
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
-    filePath: './build.ps1 Pack --Configuration $(Configuration)'
+    filePath: 'build.ps1 Pack --Configuration $(BuildConfiguration)'
