@@ -104,7 +104,6 @@ class Build : NukeBuild
     });
 
     Target Push => _ => _
-    .DependsOn(Pack)
     .Requires(() => Source)
     .Requires(() => Configuration)
     .Requires(() => SourceApiKey)
