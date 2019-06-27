@@ -12,6 +12,7 @@ variables:
   NukeBuildDirectory: 'build'
   NukeBuildScript: 'build.ps1'
   NukeFile: '.nuke'
+  SolutionFile: 'Wcf.Interceptor.Module.sln'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -38,6 +39,12 @@ steps:
   displayName: 'Copy build script(ps1) into staging directory'
   inputs:
     Contents: $(NukeBuildScript)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy solution file into staging directory (just for nuke purposes)'
+  inputs:
+    Contents: $(SolutionFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
