@@ -15,6 +15,7 @@ using Octokit;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
+using static Nuke.Common.EnvironmentInfo;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -79,6 +80,8 @@ class Build : NukeBuild
             if (!GitRepository.IsGitHubRepository())
                 throw new Exception("SetVersion supported when this is in a git repository");
 
+            Logger.Log(LogLevel.Normal, $"Updating version file {VersionFile} with version {GitVersion.MajorMinorPatch}");
+
             File.WriteAllText(VersionFile, $"{GitVersion.MajorMinorPatch}");
         });
 
@@ -92,7 +95,7 @@ class Build : NukeBuild
         });
 
     Target Compile => _ => _
-        .DependsOn(SetVersion)
+        .DependsOn(Restore)
         .Executes(() =>
         {
             MSBuild(s => s
@@ -173,7 +176,6 @@ class Build : NukeBuild
 
     private void ReleaseInGitHub(string artifactFullPath)
     {
-
         if (!GitRepository.IsGitHubRepository())
             throw new Exception("Release In GitHub is only supported when git repo remote is github!");
 
