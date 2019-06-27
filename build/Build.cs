@@ -105,7 +105,6 @@ class Build : NukeBuild
 
     Target Push => _ => _
     .Requires(() => Source)
-    .Requires(() => Configuration)
     .Requires(() => SourceApiKey)
     .Requires(() => GithubApiKey)
     .Executes(() =>
