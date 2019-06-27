@@ -18,6 +18,11 @@ variables:
 steps:
 - task: NuGetToolInstaller@1
 - powershell: ls
+- task: CopyFiles@1
+  displayName: 'Copy .git file into staging directory for git release purposes'
+  inputs:
+    Contents: $(GitFolder)\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
@@ -48,12 +53,7 @@ steps:
     Contents: $(SolutionFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
-- task: CopyFiles@1
-  displayName: 'Copy .git file into staging directory for git release purposes'
-  inputs:
-    Contents: $(GitFile)\**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-    SourceFolder: $(GitFile)
+
 
 - task: CopyFiles@1
   displayName: 'Copy artifacts into staging directory'
