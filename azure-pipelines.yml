@@ -8,33 +8,32 @@ pool:
 
 variables:
   BuildConfiguration: 'Release'
-  NukePublishDirectory: 'artifacts'
   NukeBuildDirectory: 'build'
   NukeBuildScript: 'build.ps1'
   NukeFile: '.nuke'
+  VersionFile: 'release.version'
   GitFolder: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
 
 steps:
 - task: NuGetToolInstaller@1
-- powershell: ls
 
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
     filePath: 'build.ps1'
-    arguments: 'Pack --Configuration $(BuildConfiguration)'
-
-- task: CopyFiles@1
-  displayName: 'Copy $(NukeBuildDirectory) into $(Build.ArtifactStagingDirectory)'
-  inputs:
-    Contents: $(NukeBuildDirectory)\**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
+    arguments: 'Compile --Configuration $(BuildConfiguration)'
 
 - task: CopyFiles@1
   displayName: 'Copy $(NukeFile) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(NukeFile)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(VersionFile) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(VersionFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
