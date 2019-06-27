@@ -12,6 +12,7 @@ variables:
   NukeBuildDirectory: 'build'
   NukeBuildScript: 'build.ps1'
   NukeFile: '.nuke'
+  GitFile: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
 
 steps:
@@ -30,7 +31,7 @@ steps:
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
-  displayName: 'Copy nuke file into staging directory'
+  displayName: 'Copy .nuke file into staging directory'
   inputs:
     Contents: $(NukeFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
@@ -45,6 +46,12 @@ steps:
   displayName: 'Copy solution file into staging directory (just for nuke purposes)'
   inputs:
     Contents: $(SolutionFile)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy .git file into staging directory for git release purposes'
+  inputs:
+    Contents: $(GitFile)
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
