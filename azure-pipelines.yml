@@ -19,13 +19,18 @@ variables:
   SourceDirectory: 'src'
 
 steps:
-- task: NuGetToolInstaller@1
+- task: GitVersion@4
+  displayName: 'GitVersion'
+  inputs:
+    updateAssemblyInfo: true
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.NuGetVersionV2)
+    BuildVersion: $(GitVersion.MajorMinorPatch)-$(rev:rrr)
+
+- task: NuGetToolInstaller@1
     
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
