@@ -10,8 +10,7 @@ variables:
   BuildConfiguration: 'Release'
 
 steps:
-- powershell: pwd
-              ls
+- powershell: ls
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
