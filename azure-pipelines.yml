@@ -13,9 +13,12 @@ variables:
   NukeBuildDirectory: 'build'
   NukeBuildScript: 'build.ps1'
   NukeFile: '.nuke'
+
   VersionFile: 'release.version'
   GitVersion: $(GitVersion.MajorMinorPatch)
-  BuildVersion: $(GitVersion)-$[counter(variables['GitVersion'], 100)]
+  BuildSuffix: $[counter(variables['GitVersion'], 0)]
+  BuildVersion: $(GitVersion)-$(BuildSuffix)
+  
   GitFolder: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
   SourceDirectory: 'src'
