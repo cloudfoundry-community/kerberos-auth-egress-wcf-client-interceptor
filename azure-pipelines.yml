@@ -8,7 +8,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Release'
-  ArtifactsDirectory: 'artifacts'
+  NukePublishDirectory: 'artifacts'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -21,10 +21,16 @@ steps:
     filePath: 'build.ps1'
     arguments: 'Pack --Configuration $(BuildConfiguration)'
 
+- task: CopyFiles@1
+  displayName: 'Copy artifacts into staging directory'
+  inputs:
+    Contents: $(NukePublishDirectory)\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Packed Artifacts'
   inputs:
-    PathtoPublish: "$(ArtifactsDirectory)"
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
     ArtifactName: artifacts
 
 
