@@ -26,12 +26,6 @@ steps:
     arguments: 'Compile --Configuration $(BuildConfiguration)'
 
 - task: CopyFiles@1
-  displayName: 'Copy $(SourceDirectory) into $(Build.ArtifactStagingDirectory)'
-  inputs:
-    Contents: $(SourceDirectory)/**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
   displayName: 'Copy $(NukeFile) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(NukeFile)
@@ -41,12 +35,6 @@ steps:
   displayName: 'Copy $(VersionFile) into $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: $(VersionFile)
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(GitFolder) into $(Build.ArtifactStagingDirectory) for git release purposes'
-  inputs:
-    Contents: $(GitFolder)\**
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
@@ -62,9 +50,21 @@ steps:
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: CopyFiles@1
-  displayName: 'Copy $(NukePublishDirectory) into $(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy $(SourceDirectory) into $(Build.ArtifactStagingDirectory)'
   inputs:
-    Contents: $(NukePublishDirectory)\**
+    Contents: $(SourceDirectory)/**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(NukeBuildDirectory) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(NukeBuildDirectory)\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(GitFolder) into $(Build.ArtifactStagingDirectory) for git release purposes'
+  inputs:
+    Contents: $(GitFolder)\**
     TargetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
