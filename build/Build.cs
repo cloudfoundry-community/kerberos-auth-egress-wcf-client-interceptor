@@ -194,14 +194,18 @@ class Build : NukeBuild
         }
         catch (Exception)
         {
-            Logger.Log(LogLevel.Normal, $"Release with name {releaseName} not found.. so creating new..."); 
+            Logger.Log(LogLevel.Normal, $"Release with name {releaseName} not found.. so creating new...");
+
+            var packageSource = (preReleaseTag == "beta" || string.IsNullOrWhiteSpace(preReleaseTag)) 
+                                            ? "https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor" 
+                                            : "https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor";
 
             var newRelease = new NewRelease(releaseName)
             {
                 Name = releaseName,
                 Draft = false,
                 Prerelease = false,
-                Body = "Package sources: \n https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor \n https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor"
+                Body = $"Package source: \n {packageSource}"
             };
             release = client.Repository.Release.Create(owner, repoName, newRelease).Result;
         }
