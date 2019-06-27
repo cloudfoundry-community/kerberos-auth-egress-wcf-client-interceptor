@@ -1,3 +1,5 @@
+name: $(Ver)-$(date:yyyyMMdd)$(rev:.r)
+
 trigger:
   branches:
     include:
@@ -11,14 +13,30 @@ variables:
   NukeBuildDirectory: 'build'
   NukeBuildScript: 'build.ps1'
   NukeFile: '.nuke'
+
   VersionFile: 'release.version'
+  GitVersion: $(GitVersion.MajorMinorPatch)
+  BuildSuffix: $[counter(variables['GitVersion'], 0)]
+  BuildVersion: $(GitVersion)-$(BuildSuffix)
+  
   GitFolder: '.git'
   SolutionFile: 'Wcf.Interceptor.Module.sln'
   SourceDirectory: 'src'
 
 steps:
-- task: NuGetToolInstaller@1
+- task: GitVersion@4
+  displayName: 'GitVersion'
+  inputs:
+    updateAssemblyInfo: true
 
+- script: echo %Action%%BuildVersion%
+  displayName: 'Set build version'
+  env:
+    Action: '##vso[build.updatebuildnumber]'
+    BuildVersion: $(BuildVersion)
+
+- task: NuGetToolInstaller@1
+    
 - task: PowerShell@2
   displayName: 'Executing Nuke Build'
   inputs:
