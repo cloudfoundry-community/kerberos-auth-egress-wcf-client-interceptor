@@ -1,0 +1,92 @@
+trigger:
+  branches:
+    include:
+    - master
+
+pool:
+  vmImage: vs2017-win2016
+
+variables:
+  BuildConfiguration: 'Release'
+  NukeBuildDirectory: 'build'
+  NukeBuildScript: 'build.ps1'
+  NukeFile: '.nuke'
+
+  VersionFile: 'release.version'
+  GitVersion: $(GitVersion.MajorMinorPatch)
+  BuildSuffix: $[counter(variables['GitVersion'], 0)]
+  BuildVersion: $(GitVersion)-$(BuildSuffix)
+  
+  GitFolder: '.git'
+  SolutionFile: 'Wcf.Interceptor.Module.sln'
+  SourceDirectory: 'src'
+
+steps:
+- task: GitVersion@4
+  displayName: 'GitVersion'
+  inputs:
+    updateAssemblyInfo: true
+
+- script: echo %Action%%BuildVersion%
+  displayName: 'Set build version'
+  env:
+    Action: '##vso[build.updatebuildnumber]'
+    BuildVersion: $(BuildVersion)
+
+- task: NuGetToolInstaller@1
+    
+- task: PowerShell@2
+  displayName: 'Executing Nuke Build'
+  inputs:
+    filePath: 'build.ps1'
+    arguments: 'Compile --Configuration $(BuildConfiguration)'
+
+- task: CopyFiles@1
+  displayName: 'Copy $(NukeFile) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(NukeFile)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(VersionFile) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(VersionFile)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(NukeBuildScript) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(NukeBuildScript)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(SolutionFile) into $(Build.ArtifactStagingDirectory) (just for nuke purposes)'
+  inputs:
+    Contents: $(SolutionFile)
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(SourceDirectory) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(SourceDirectory)/**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(NukeBuildDirectory) into $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: $(NukeBuildDirectory)\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@1
+  displayName: 'Copy $(GitFolder) into $(Build.ArtifactStagingDirectory) for git release purposes'
+  inputs:
+    Contents: $(GitFolder)\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Packed Artifacts from $(Build.ArtifactStagingDirectory)'
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
+    ArtifactName: publish
+
+
