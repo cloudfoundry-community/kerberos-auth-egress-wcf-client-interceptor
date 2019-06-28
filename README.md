@@ -10,10 +10,10 @@ This package will add a Wcf client interceptor which will injects kerberos ticke
 #### Below are the important developer instructions, to follow after installation of this package
 
 1. Add the supply buildpack from [here](https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack/releases) in the CF manifest (preferably the latest release). 
-   IMPORTANT: Make sure the application is built/published with target platform 'x64'
+	> IMPORTANT: Make sure the application is built/published with target platform `x64`
 2. Follow the [readme](https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack) to setup the sources for kerberos config and keytab files
    For kerberos config template, please [here](https://github.com/cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini)
-3. Set the correct client UPN in AppSettings with key 'ClientUserPrincipalName' as below (this section will be already added by the package)
+3. Set the correct client UPN in AppSettings with key `ClientUserPrincipalName` as below (this section will be already added by the package)
 ```xml
   <appSettings>
 		<add key="ClientUserPrincipalName" value="client_username@domain" />
@@ -25,7 +25,7 @@ This package will add a Wcf client interceptor which will injects kerberos ticke
 		<add key="ImpersonateClientUser" value="false" />
   </appSettings>
 ```
-5. Target service UPN has to be provided in the client/endpoint/identity configuration as in the sample below. If not, system will try to use the SPN 'host/foo.bar' (based on the below sample)
+5. Target service UPN has to be provided in the client/endpoint/identity configuration as in the sample below. If not, system will try to use the SPN `host/foo.bar` (based on the below sample)
 ```xml
   <system.serviceModel>
 		<client>
@@ -42,7 +42,7 @@ This package will add a Wcf client interceptor which will injects kerberos ticke
 		</client>
 	</system.serviceModel>
   ```
-6. To see debug logs, please set the log level to "Debug" or "Trace", via environment variable "PivotalIwaWcfClientInterceptor:LogLevel:Default" 
+6. To see debug logs, please set the log level to `Debug` or `Trace`, via environment variable `PivotalIwaWcfClientInterceptor:LogLevel:Default`
 
 ##### Notes
 1. Stable versions are available at [www.nuget.org](https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor), [nuget feed](https://api.nuget.org/v3/index.json)
