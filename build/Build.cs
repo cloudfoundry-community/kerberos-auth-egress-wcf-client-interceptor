@@ -113,10 +113,10 @@ class Build : NukeBuild
                 .SetNodeReuse(IsLocalBuild));
         });
 
-    
+
 
     Target Pack => _ => _
-    .Requires(()=> Suffix)
+    .Requires(() => Suffix)
     .Executes(() =>
     {
         Directory.EnumerateFiles(RootDirectory, "*.*").ToList().ForEach(x => Logger.Log(LogLevel.Normal, $"File: {x}"));
@@ -198,9 +198,7 @@ class Build : NukeBuild
         var owner = gitIdParts[0];
         var repoName = gitIdParts[1];
 
-        var buildVersion = string.IsNullOrWhiteSpace(BuildVersion) ? File.ReadAllText(VersionFile) : BuildVersion;
-
-        var releaseName = $"v{buildVersion}-{Suffix}";
+        var releaseName = $"v{File.ReadAllText(VersionFile)}-{Suffix}";
 
         Release release;
         try
@@ -215,8 +213,8 @@ class Build : NukeBuild
         {
             Logger.Log(LogLevel.Normal, $"Release with name {releaseName} not found.. so creating new...");
 
-            var packageSource = (Suffix == "beta" || string.IsNullOrWhiteSpace(Suffix)) 
-                                            ? "https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor" 
+            var packageSource = (Suffix == "beta" || string.IsNullOrWhiteSpace(Suffix))
+                                            ? "https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor"
                                             : "https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor";
 
             var newRelease = new NewRelease(releaseName)
@@ -224,7 +222,7 @@ class Build : NukeBuild
                 Name = releaseName,
                 Draft = false,
                 Prerelease = false,
-                Body = $"Package source: {packageSource}"
+                Body = $"Package source: {packageSource}\n Build Version: {(string.IsNullOrWhiteSpace(BuildVersion) ? "Unknown" : BuildVersion)}"
             };
             release = client.Repository.Release.Create(owner, repoName, newRelease).Result;
         }
