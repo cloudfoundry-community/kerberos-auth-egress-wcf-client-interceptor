@@ -1,15 +1,18 @@
 ### PivotalServices.WcfClient.Kerberos.Interceptor
 
-Stable versions are available at www.nuget.org https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor (please refer to the note at the end for more details)
+[![Build Status](https://dev.azure.com/alfusinigoj/kerberos-auth-egress-wcf-client-interceptor/_apis/build/status/cloudfoundry-community.kerberos-auth-egress-wcf-client-interceptor?branchName=master)](https://dev.azure.com/alfusinigoj/kerberos-auth-egress-wcf-client-interceptor/_build/latest?definitionId=1&branchName=master)
+[![NuGet](https://img.shields.io/nuget/v/PivotalServices.WcfClient.Kerberos.Interceptor.svg?style=flat-square)](http://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor)
+[![MyGet](https://img.shields.io/myget/ajaganathan/v/PivotalServices.WcfClient.Kerberos.Interceptor.svg?style=flat-square)](https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor)
 
-This package will add a Wcf client interceptor which will injects kerberos ticket for egress requests. This should be used together with the supply buildpack https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack to make it fully functional
+
+This package will add a Wcf client interceptor which will injects kerberos ticket for egress requests. This should be used together with the [supply buildpack](https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack) to make it fully functional
 
 #### Below are the important developer instructions, to follow after installation of this package
 
-1. Add the supply buildpack from "https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack/releases" in the CF manifest (preferably the latest release). 
+1. Add the supply buildpack from [here](https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack/releases) in the CF manifest (preferably the latest release). 
    IMPORTANT: Make sure the application is built/published with target platform 'x64'
-2. Follow the readme of https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack to setup the sources for kerberos config and keytab files
-   For kerberos config template, please here https://github.com/cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
+2. Follow the [readme](https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack) to setup the sources for kerberos config and keytab files
+   For kerberos config template, please [here](https://github.com/cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini)
 3. Set the correct client UPN in AppSettings with key 'ClientUserPrincipalName' as below (this section will be already added by the package)
 ```xml
   <appSettings>
@@ -42,5 +45,6 @@ This package will add a Wcf client interceptor which will injects kerberos ticke
 6. To see debug logs, please set the log level to "Debug" or "Trace", via environment variable "PivotalIwaWcfClientInterceptor:LogLevel:Default" 
 
 ##### Notes
-1. The dev/alpha packages are available at https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor, feed https://www.myget.org/F/ajaganathan/api/v3/index.json
-2. The packages are still in beta version as it still depends on a beta version of GssKerberos package.
+1. Stable versions are available at [www.nuget.org](https://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor), [nuget feed](https://api.nuget.org/v3/index.json)
+2. The dev/alpha packages are available at [www.myget.org](https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor), [myget feed](https://www.myget.org/F/ajaganathan/api/v3/index.json)
+3. The packages are still in beta version as it still depends on a beta version of GssKerberos package.
