@@ -1,6 +1,7 @@
 ### PivotalServices.WcfClient.Kerberos.Interceptor
 
-[![Build Status](https://dev.azure.com/alfusinigoj/kerberos-auth-egress-wcf-client-interceptor/_apis/build/status/cloudfoundry-community.kerberos-auth-egress-wcf-client-interceptor?branchName=master)](https://dev.azure.com/alfusinigoj/kerberos-auth-egress-wcf-client-interceptor/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/ajaganathan-cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/_apis/build/status/cloudfoundry-community.kerberos-auth-egress-wcf-client-interceptor?branchName=master)](https://dev.azure.com/ajaganathan-cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/_build/latest?definitionId=1&branchName=master)
+
 [![NuGet](https://img.shields.io/nuget/v/PivotalServices.WcfClient.Kerberos.Interceptor.svg?style=flat-square)](http://www.nuget.org/packages/PivotalServices.WcfClient.Kerberos.Interceptor)
 [![MyGet](https://img.shields.io/myget/ajaganathan/v/PivotalServices.WcfClient.Kerberos.Interceptor.svg?style=flat-square)](https://www.myget.org/feed/ajaganathan/package/nuget/PivotalServices.WcfClient.Kerberos.Interceptor)
 
