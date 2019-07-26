@@ -41,47 +41,18 @@ steps:
     filePath: 'build.ps1'
     arguments: 'Compile --Configuration $(BuildConfiguration)'
 
-- task: CopyFiles@1
-  displayName: 'Copy $(NukeFile) into staging directory'
+- task: CopyFiles@2
+  displayName: 'Copy Nuke dependencies into staging directory for publishing purposes'
   inputs:
-    Contents: $(NukeFile)
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(VersionFile) into staging directory'
-  inputs:
-    Contents: $(VersionFile)
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(NukeBuildScript) into staging directory'
-  inputs:
-    Contents: $(NukeBuildScript)
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(SolutionFile) into staging directory (just for nuke purposes)'
-  inputs:
-    Contents: $(SolutionFile)
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(SourceDirectory) into staging directory'
-  inputs:
-    Contents: $(SourceDirectory)/**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(NukeBuildDirectory) into staging directory'
-  inputs:
-    Contents: $(NukeBuildDirectory)\**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: CopyFiles@1
-  displayName: 'Copy $(GitFolder) into staging directory for git release purposes'
-  inputs:
-    Contents: $(GitFolder)\**
-    TargetFolder: $(Build.ArtifactStagingDirectory)
+    Contents: |
+     $(NukeFile)
+     $(VersionFile)
+     $(NukeBuildScript)
+     $(SolutionFile)
+     $(SourceDirectory)/**
+     $(NukeBuildDirectory)\**
+     $(GitFolder)\**
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Packed Artifacts from staging directory'
